@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 
-project(HelloApp)
+project(ParserApp)
 
 # for matplotlibcpp
 find_package(Python3 REQUIRED
@@ -22,13 +22,10 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(csv)
 
 FetchContent_Declare(
-    matplotlib
-    GIT_REPOSITORY https://github.com/lava/matplotlib-cpp.git
+    json
+    URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz
 )
-FetchContent_GetProperties(matplotlib)
-if(NOT matplotlib_POPULATED)
-    FetchContent_Populate(matplotlib)
-endif()
+FetchContent_MakeAvailable(json)
 
 if (NOT EXISTS "${CMAKE_CURRENT_BINARY_DIR}/data/telangana_vehicle_sales.csv")
     message(STATUS "CSV file does not exists!!!!")
@@ -66,8 +63,6 @@ if (NOT EXISTS "${CMAKE_CURRENT_BINARY_DIR}/data/telangana_vehicle_sales.csv")
         RESULT_VARIABLE KAGGLE_DATASET_RESULT
     )
 
-    
-        
     if(NOT KAGGLE_DATASET_RESULT EQUAL "0")
         message(FATAL_ERROR "Getting of the dataset FAILED")
     endif()
@@ -85,4 +80,4 @@ if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
 endif()
 
-target_link_libraries(${PROJECT_NAME} ${PYTHON_LIBRARIES} Python3::NumPy csv "--coverage")
+target_link_libraries(${PROJECT_NAME} ${PYTHON_LIBRARIES} Python3::NumPy csv "--coverage" nlohmann_json::nlohmann_json)
